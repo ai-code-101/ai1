@@ -1,0 +1,12 @@
+Company Name: ABC Electronics
+
+Products:
+- Aula F75 Keyboard
+- Aula S100 Pro
+
+Support Hours:
+- Monday to Friday
+- 8AM to 5PM
+
+Phone:
+0700123456

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company AI Assistant</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #d9dbd4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .phone {
+            width: 420px;
+            height: 90vh;
+            max-height: 750px;
+            background: #efeae2;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            background: #075e54;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #25d366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .header-info { flex: 1; }
+        .header-info h2 { font-size: 16px; color: white; font-weight: 600; }
+        .header-info p { font-size: 12px; color: #b2dfdb; }
+
+        .header-icons { display: flex; gap: 18px; font-size: 20px; color: white; cursor: pointer; }
+
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c0bdb5' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .date-divider {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0;
+        }
+
+        .date-divider span {
+            background: #e1f3fb;
+            color: #5a7a85;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .msg-wrap { display: flex; }
+        .msg-wrap.user { justify-content: flex-end; }
+        .msg-wrap.bot  { justify-content: flex-start; }
+
+        .bubble {
+            max-width: 75%;
+            padding: 7px 10px 5px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            word-wrap: break-word;
+        }
+
+        .bubble.user {
+            background: #dcf8c6;
+            border-radius: 8px 0 8px 8px;
+        }
+
+        .bubble.bot {
+            background: white;
+            border-radius: 0 8px 8px 8px;
+        }
+
+        .bubble p.text {
+            font-size: 14px;
+            color: #111;
+            line-height: 1.5;
+            margin: 0 0 3px;
+        }
+
+        .bubble .meta {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+        }
+
+        .bubble .meta .ticks { color: #4fc3f7; font-size: 13px; }
+
+        .bubble.error {
+            background: #fff3f3;
+            border-left: 3px solid #e53935;
+            border-radius: 0 8px 8px 8px;
+        }
+
+        .bubble.error p.text { color: #c62828; }
+
+        .input-area {
+            background: #f0f0f0;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .input-wrap {
+            flex: 1;
+            background: white;
+            border-radius: 22px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-wrap textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            resize: none;
+            background: transparent;
+            color: #111;
+            font-family: 'Segoe UI', sans-serif;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+
+        .input-wrap textarea::placeholder { color: #999; }
+
+        .input-icon { color: #999; font-size: 20px; cursor: pointer; }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #25d366;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .send-btn:hover { background: #1da851; }
+
+        .chat-box::-webkit-scrollbar { width: 4px; }
+        .chat-box::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+
+    <div class="header">
+        <div class="avatar">AI</div>
+        <div class="header-info">
+            <h2>Company Assistant</h2>
+            <p id="statusText">online</p>
+        </div>
+        <div class="header-icons">
+            <span>&#9990;</span>
+            <span>&#8942;</span>
+        </div>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+
+        <div class="date-divider">
+            <span id="dateLabel"></span>
+        </div>
+
+        {% if not history %}
+        <div class="msg-wrap bot">
+            <div class="bubble bot">
+                <p class="text">👋 Hello! Ask me anything about the company.</p>
+                <div class="meta"><span id="initTime"></span></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% for message in history %}
+            {% if message.role == "user" %}
+            <div class="msg-wrap user">
+                <div class="bubble user">
+                    <p class="text">{{ message.content }}</p>
+                    <div class="meta">
+                        <span>{{ message.time }}</span>
+                        <span class="ticks">✓✓</span>
+                    </div>
+                </div>
+            </div>
+            {% elif message.role == "error" %}
+            <div class="msg-wrap bot">
+                <div class="bubble error">
+                    <p class="text">⚠️ {{ message.content }}</p>
+                    <div class="meta"><span>{{ message.time }}</span></div>
+                </div>
+            </div>
+            {% else %}
+            <div class="msg-wrap bot">
+                <div class="bubble bot">
+                    <p class="text">{{ message.content }}</p>
+                    <div class="meta"><span>{{ message.time }}</span></div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <form method="post" class="input-area" id="chatForm">
+        <div class="input-wrap">
+            <span class="input-icon">&#128578;</span>
+            <textarea
+                name="question"
+                rows="1"
+                placeholder="Type a message"
+                required
+                id="msgInput"></textarea>
+            <span class="input-icon">&#128206;</span>
+        </div>
+        <button type="submit" class="send-btn">&#10148;</button>
+    </form>
+
+</div>
+
+<script>
+    const chatBox = document.getElementById('chatBox');
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const dateStr = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+
+    const dateLabel = document.getElementById('dateLabel');
+    if (dateLabel) dateLabel.textContent = dateStr;
+
+    const initTime = document.getElementById('initTime');
+    if (initTime) initTime.textContent = timeStr;
+
+    const textarea = document.getElementById('msgInput');
+    textarea.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('chatForm').submit();
+        }
+    });
+
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+</script>
+
+</body>
+</html>
