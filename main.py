@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="templates")
 KNOWLEDGE_FILE = "company.txt"
 knowledge = Path(KNOWLEDGE_FILE).read_text(encoding="utf-8")
 
-MODEL = "qwen2.5:3b"
+MODEL = "huihui_ai/lfm2.5-abliterated"
 
 history = []
 
@@ -42,7 +42,7 @@ async def ask_question(request: Request, question: str = Form(...)):
                     "role": "system",
                     "content": (
                         "You are a helpful and intelligent company assistant. "
-                        "You have access to the company's information and should prioritize it when answering company-related questions. "
+                        "You have access to the company's information and should prioritize it when answering company-related questions, however you are allowed to give your own opinions. "
                         "However, you are also free to think, reason, and answer general questions using your own knowledge. "
                         "If a question is about the company but the answer is not in the provided information, "
                         "be honest and say you are not sure about that specific detail, but still try to help as best you can."
